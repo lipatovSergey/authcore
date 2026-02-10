@@ -201,7 +201,7 @@ authcore/
 │   └── main.ts
 ├── test/
 │   └── auth.e2e-spec.ts
-├── .claude/
+├── documentation/
 │   ├── project-plan.md (этот файл)
 │   └── context.md
 ├── docker-compose.yml
