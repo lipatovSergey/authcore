@@ -5,9 +5,15 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 
+const DOTENV_CONFIG_PATH = process.env.DOTENV_CONFIG_PATH ?? '.env.development';
+console.log(DOTENV_CONFIG_PATH);
+
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env.development'] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [DOTENV_CONFIG_PATH],
+    }),
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],

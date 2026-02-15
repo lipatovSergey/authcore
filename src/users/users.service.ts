@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import type { CreateUserInput } from './interfaces/create-user.input';
+import { isPostgresErrorLike } from './interfaces/utils/is-postgres-db-error.util';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +18,17 @@ export class UsersService {
       passwordHash: input.passwordHash,
     });
 
-    return await this.repo.save(user);
+    try {
+      return await this.repo.save(user);
+    } catch (error) {
+      if (
+        isPostgresErrorLike(error) &&
+        error.code === '23505' &&
+        error.detail.includes('email')
+      ) {
+        throw new ConflictException();
+      }
+      throw error;
+    }
   }
 }
